@@ -1,0 +1,110 @@
+﻿<div class="row">
+    @{
+        ViewBag.Title = "Home Page";
+        string month = DateTime.Now.ToString("yyyy-MM");
+        string _idU = "";
+        try
+        {
+            _idU = Request.Cookies["_idU"].Value;
+        }
+        catch (Exception ex)
+        {
+
+        }
+
+        if (!String.IsNullOrEmpty(_idU))
+        {
+            <input id="idU" type="text" class="input" value="@_idU" hidden>
+
+            <div id="month_form">
+                <form style="background: rgba(255, 255, 255, 0.4);">
+                    <center>
+                        <label class="label label-info" style="font-size:18px;">
+                            Seleccione el mes del reporte a consultar:
+                        </label><br />
+                        <br />
+                        <input type="text" id="date" /><br />
+                        @*<input type="month" id="date" min="2023-12" max="@month" value="@month" /><br />*@
+                        <input type="button" value="Generar" id="Generate" />
+                        <input type="button" value="Exportar" id="Export" disabled />
+                    </center>
+                </form>
+            </div>
+            <center>
+                <svg class="pl" id="loader" viewBox="0 0 200 200" width="800" height="800" xmlns="http://www.w3.org/2000/svg" style="display: none;">
+                    <defs>
+                        <linearGradient id="pl-grad1" x1="1" y1="0.5" x2="0" y2="0.5">
+                            <stop offset="0%" stop-color="hsl(195, 100%, 40%)" />
+                            <stop offset="100%" stop-color="hsl(199, 100%, 95%)" />
+                        </linearGradient>
+                        <linearGradient id="pl-grad2" x1="0" y1="0" x2="0" y2="1">
+                            <stop offset="0%" stop-color="hsl(195, 100%, 40%)" />
+                            <stop offset="100%" stop-color="hsl(199, 100%, 95%)" />
+                        </linearGradient>
+                    </defs>
+                    <circle class="pl__ring" cx="100" cy="100" r="82" fill="none" stroke="url(#pl-grad1)" stroke-width="15" stroke-dasharray="0 257 1 257" stroke-dashoffset="0.01" stroke-linecap="round" transform="rotate(-90,100,100)" />
+                    <line class="pl__ball" stroke="url(#pl-grad2)" x1="100" y1="18" x2="100.01" y2="182" stroke-width="15" stroke-dasharray="1 165" stroke-linecap="round" />
+                </svg>
+            </center>
+            <div id="getTable" style="background: rgba(255, 255, 255, 0.7);"></div>
+
+            @section Scripts{
+                <script type="text/javascript">
+                    $(document).ready(function () {
+                        $("#date").datetimepicker({
+                            viewMode: 'years',
+                            format: 'YYYY-MM',
+                            minDate: '2023/12/01',
+                            maxDate: '@month'
+                        });
+                    });
+                    $("#log_out").click(function () {
+                        logOUT();
+                    });
+                    $("#Generate").click(function () {
+                        $("#loader").toggle();
+                        $("#getTable").toggle();
+                        getRpwh();
+                    });
+                    $("#Export").click(function () {
+                        fnExcelReport();
+                    });
+                </script>
+            }
+        }
+        else
+        {
+            <div class="login-wrap" id="login">
+                <div class="login-html">
+                    <input id="tab-1" type="radio" name="tab" class="sign-in" checked><label for="tab-1" class="tab">Inicio de Sesión</label>
+                    <input id="tab-2" type="radio" name="tab" class="sign-up"><label for="tab-2" class="tab"></label>
+                    <div class="login-form">
+                        <div class="sign-in-htm">
+                            <div class="group">
+                                <label for="user" class="label">Usuario</label>
+                                <input id="user" type="text" class="input">
+                            </div>
+                            <div class="group">
+                                <label for="pass" class="label">Contraseña</label>
+                                <input id="pass" type="password" class="input" data-type="password">
+                            </div>
+                            <div class="group">
+                                <input type="submit" class="button" value="Acceder" id="signup">
+                            </div>
+                            <div class="hr"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            @section Scripts {
+                <script type="text/javascript">
+                    $("#signup").click(function () {
+                        logIn();
+                    });
+                </script>
+            }
+
+        }
+    }
+</div>
+
